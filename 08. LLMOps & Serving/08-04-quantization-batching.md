@@ -59,7 +59,7 @@ Three consequences drive every decision in this subtopic:
 **Uniform quantization.** With step $\Delta$ and zero point $z$:
 
 $$
-q = \operatorname{clamp}\!\left(\operatorname{round}\!\left(\tfrac{x}{\Delta}\right) + z,\; q_{\min},\, q_{\max}\right),
+q = \mathrm{clamp}\!\left(\mathrm{round}\!\left(\tfrac{x}{\Delta}\right) + z,\; q_{\min},\, q_{\max}\right),
 \qquad \hat{x} = \Delta\,(q - z).
 $$
 

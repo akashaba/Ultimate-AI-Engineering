@@ -119,7 +119,7 @@ Min et al. (2022), *Rethinking the Role of Demonstrations*, found that for class
 Retrieving demonstrations that are semantically similar to the query (kNN over embeddings) reliably beats a random fixed set (Liu et al., 2022). Pure similarity, though, returns near-duplicates, which amplifies surface copying. Use **Maximal Marginal Relevance (MMR)** to balance relevance against diversity:
 
 $$
-\operatorname{MMR} = \arg\max_{d_i \in P \setminus S}\Big[\lambda\cdot\operatorname{sim}(q, d_i) - (1-\lambda)\cdot\max_{d_j \in S}\operatorname{sim}(d_i, d_j)\Big]
+\mathrm{MMR} = \arg\max_{d_i \in P \setminus S}\Big[\lambda\cdot\mathrm{sim}(q, d_i) - (1-\lambda)\cdot\max_{d_j \in S}\mathrm{sim}(d_i, d_j)\Big]
 $$
 
 Add **label stratification** (at least one example per label when the label space is small) to counter majority-label bias.
@@ -160,7 +160,7 @@ def select_demos_mmr(query_emb, pool_embs, pool_labels, k=8, lam=0.7, stratify=T
 Zhao et al. (2021) estimate the model's bias by feeding a **content-free input** (e.g. `"N/A"`, `""`, `"[MASK]"`) through the *same* prompt, and reading the label distribution $\hat p_{cf}$. The bias is then corrected with a diagonal affine transform:
 
 $$
-W = \operatorname{diag}(\hat p_{cf})^{-1}, \qquad
+W = \mathrm{diag}(\hat p_{cf})^{-1}, \qquad
 \hat q = \frac{W\,\hat p}{\mathbf{1}^\top W\,\hat p}, \qquad
 \hat y = \arg\max_j \hat q_j
 $$
@@ -212,7 +212,7 @@ The reasoning $r$ adds **serial computation**: each generated token adds a forwa
 Sample $n$ reasoning paths at temperature $T > 0$ and marginalise over reasoning by majority vote on the final answers (Wang et al., 2023):
 
 $$
-\hat a = \arg\max_{a} \sum_{i=1}^{n} \mathbb{1}\big[\operatorname{ans}(r_i) = a\big]
+\hat a = \arg\max_{a} \sum_{i=1}^{n} \mathbb{1}\big[\mathrm{ans}(r_i) = a\big]
 $$
 
 The **agreement ratio** $\max_a \frac{1}{n}\sum_i \mathbb{1}[\cdot]$ doubles as a cheap confidence signal: route low-agreement cases to a human or a stronger model.
@@ -269,7 +269,7 @@ Models trained with reinforcement learning to reason (extended/adaptive "thinkin
 Hand-tuning prompts against intuition does not scale. Treat the prompt as a parameter and optimise it against an eval set:
 
 $$
-c^* = \arg\max_{c \in \mathcal{C}} \; \frac{1}{|D_{\text{dev}}|}\sum_{(x,y)\in D_{\text{dev}}} \operatorname{metric}\big(f_\theta(x; c),\, y\big)
+c^* = \arg\max_{c \in \mathcal{C}} \; \frac{1}{|D_{\text{dev}}|}\sum_{(x,y)\in D_{\text{dev}}} \mathrm{metric}\big(f_\theta(x; c),\, y\big)
 $$
 
 | Method | Search space | How it searches |
@@ -354,7 +354,7 @@ A prompt change is a deployment. Gate it like one.
 
 ### 7.2 Compare prompts with *paired* tests
 
-Both prompts run on the same items, so use a paired test. **McNemar's exact test** looks only at discordant items: $b$ is the number that A got right and B wrong, and $c$ the reverse. Under $H_0$, $b \sim \operatorname{Binomial}(b+c, \tfrac12)$:
+Both prompts run on the same items, so use a paired test. **McNemar's exact test** looks only at discordant items: $b$ is the number that A got right and B wrong, and $c$ the reverse. Under $H_0$, $b \sim \mathrm{Binomial}(b+c, \tfrac12)$:
 
 $$
 p = \min\!\Big(1,\; 2\sum_{i=0}^{\min(b,c)} \binom{b+c}{i}\,2^{-(b+c)}\Big)

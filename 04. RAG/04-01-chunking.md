@@ -178,7 +178,7 @@ def structure_chunks(doc_id: str, text: str, max_tokens: int, count) -> list[Chu
 Embed consecutive sentences, and cut where the **cosine distance between neighbours** spikes (a topic shift). A cut goes where
 
 $$
-\delta_i = 1 - \cos(\mathbf{e}_i, \mathbf{e}_{i+1}) > \operatorname{percentile}_{p}\big(\{\delta_j\}\big)
+\delta_i = 1 - \cos(\mathbf{e}_i, \mathbf{e}_{i+1}) > \mathrm{percentile}_{p}\big(\{\delta_j\}\big)
 $$
 
 It works well for unstructured prose (transcripts, essays), and adds little over structure-aware chunking for well-structured documents. It costs one embedding pass per sentence at index time.

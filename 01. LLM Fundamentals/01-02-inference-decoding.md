@@ -312,7 +312,7 @@ def apply_grammar_mask(logits: torch.Tensor, allowed_token_ids: torch.Tensor) ->
 Affine quantization of a tensor $x$ to $b$ bits with scale $s$ and zero-point $z$:
 
 $$
-x_q = \operatorname{clamp}\!\left(\left\lfloor \frac{x}{s}\right\rceil + z,\ q_{\min},\ q_{\max}\right),
+x_q = \mathrm{clamp}\!\left(\left\lfloor \frac{x}{s}\right\rceil + z,\ q_{\min},\ q_{\max}\right),
 \qquad \hat x = s\,(x_q - z),
 \qquad s = \frac{x_{\max} - x_{\min}}{2^b - 1}
 $$

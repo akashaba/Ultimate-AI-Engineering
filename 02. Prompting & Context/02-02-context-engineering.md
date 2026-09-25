@@ -60,7 +60,7 @@ Retrieval quality itself is a later module (RAG). Here the focus is on **assembl
 Hybrid systems (BM25 plus dense retrieval, several indexes, memory plus documents) produce ranked lists with incomparable scores. **RRF** (Cormack et al., 2009) fuses them using ranks only:
 
 $$
-\operatorname{RRF}(d) = \sum_{r \in R} \frac{w_r}{k + \operatorname{rank}_r(d)}, \qquad k \approx 60
+\mathrm{RRF}(d) = \sum_{r \in R} \frac{w_r}{k + \mathrm{rank}_r(d)}, \qquad k \approx 60
 $$
 
 It is robust, needs no score calibration, and is a strong default before a cross-encoder reranker.
@@ -134,7 +134,7 @@ Tool definitions are **prompts**. Each tool's name, description, and parameter s
 Generative Agents (Park et al., 2023) score each memory $m$ for query $q$ at time $t$:
 
 $$
-\operatorname{score}(m) = \alpha\cdot \underbrace{\gamma^{\,(t - t_m)/\Delta}}_{\text{recency}} + \beta\cdot \underbrace{\operatorname{imp}(m)}_{\text{importance}} + \delta\cdot \underbrace{\cos(e_q, e_m)}_{\text{relevance}}
+\mathrm{score}(m) = \alpha\cdot \underbrace{\gamma^{\,(t - t_m)/\Delta}}_{\text{recency}} + \beta\cdot \underbrace{\mathrm{imp}(m)}_{\text{importance}} + \delta\cdot \underbrace{\cos(e_q, e_m)}_{\text{relevance}}
 $$
 
 Each term is min-max normalised before weighting. Here $\gamma \in (0,1)$ is a decay per interval $\Delta$, and importance is assigned at write time (by a model or by rules).

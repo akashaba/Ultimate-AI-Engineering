@@ -135,7 +135,7 @@ This is optimized with **EM** (forward-backward over the segmentation lattice). 
 WordPiece (BERT) is BPE-like, but merges the pair that most increases training-data likelihood:
 
 $$
-\operatorname{score}(a,b) = \frac{\operatorname{freq}(ab)}{\operatorname{freq}(a)\cdot \operatorname{freq}(b)}
+\mathrm{score}(a,b) = \frac{\mathrm{freq}(ab)}{\mathrm{freq}(a)\cdot \mathrm{freq}(b)}
 $$
 
 Inference uses **greedy longest-match-first**, with `##` marking word-internal pieces. It is mostly seen in encoder models (embeddings, rerankers). Know it because retrieval stacks still use it.

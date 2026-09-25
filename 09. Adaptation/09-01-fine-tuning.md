@@ -368,9 +368,9 @@ DPOTrainer(model=MODEL_ID, args=cfg, train_dataset=pairs).train()
 When correctness is **checkable by a program**, sample $G$ completions per prompt, score each with a reward $r_i$, and push up the ones that beat their siblings. **GRPO** (Shao et al., DeepSeekMath) drops PPO's value network and uses a **group-relative advantage**:
 
 $$
-\hat A_i = \frac{r_i - \operatorname{mean}(r_{1:G})}{\operatorname{std}(r_{1:G}) + \epsilon},
+\hat A_i = \frac{r_i - \mathrm{mean}(r_{1:G})}{\mathrm{std}(r_{1:G}) + \epsilon},
 \qquad
-\mathcal{L} = -\frac{1}{\sum_i |y_i|}\sum_{i=1}^{G}\sum_{t=1}^{|y_i|}\min\!\Big(\rho_{i,t}\hat A_i,\ \operatorname{clip}(\rho_{i,t}, 1-\varepsilon, 1+\varepsilon_{\text{high}})\hat A_i\Big),
+\mathcal{L} = -\frac{1}{\sum_i |y_i|}\sum_{i=1}^{G}\sum_{t=1}^{|y_i|}\min\!\Big(\rho_{i,t}\hat A_i,\ \mathrm{clip}(\rho_{i,t}, 1-\varepsilon, 1+\varepsilon_{\text{high}})\hat A_i\Big),
 $$
 
 where $\rho_{i,t}$ is the token-level importance ratio between the new and old policy.

@@ -58,7 +58,7 @@ The **residual stream** is the central abstraction. Every sublayer *reads* from 
 For queries $Q \in \mathbb{R}^{T_q \times d_k}$, keys $K \in \mathbb{R}^{T_k \times d_k}$, values $V \in \mathbb{R}^{T_k \times d_v}$:
 
 $$
-\operatorname{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V,
+\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V,
 \qquad
 M_{ij} = \begin{cases} 0 & j \le i + (T_k - T_q) \\ -\infty & \text{otherwise} \end{cases}
 $$
@@ -70,14 +70,14 @@ The mask $M$ above is the **bottom-right-aligned causal mask**. It is the correc
 Assume the components of $q$ and $k$ are i.i.d. with mean $0$ and variance $1$. Then
 
 $$
-\mathbb{E}[q\cdot k] = 0, \qquad \operatorname{Var}(q\cdot k) = \sum_{i=1}^{d_k}\operatorname{Var}(q_i k_i) = d_k .
+\mathbb{E}[q\cdot k] = 0, \qquad \mathrm{Var}(q\cdot k) = \sum_{i=1}^{d_k}\mathrm{Var}(q_i k_i) = d_k .
 $$
 
-Without scaling, logits have standard deviation $\sqrt{d_k}$ (≈ 11 for $d_k=128$). Softmax then saturates toward one-hot, and its Jacobian $\operatorname{diag}(p) - pp^\top$ collapses toward zero, which gives vanishing gradients. Dividing by $\sqrt{d_k}$ restores unit variance at initialization. Some architectures replace this with a learned or fixed scale plus **QK-norm** (RMSNorm on $q$ and $k$), which bounds logits by construction.
+Without scaling, logits have standard deviation $\sqrt{d_k}$ (≈ 11 for $d_k=128$). Softmax then saturates toward one-hot, and its Jacobian $\mathrm{diag}(p) - pp^\top$ collapses toward zero, which gives vanishing gradients. Dividing by $\sqrt{d_k}$ restores unit variance at initialization. Some architectures replace this with a learned or fixed scale plus **QK-norm** (RMSNorm on $q$ and $k$), which bounds logits by construction.
 
 ### 2.3 Softmax numerics
 
-Always compute $\operatorname{softmax}(s)_j = \dfrac{e^{s_j - m}}{\sum_k e^{s_k - m}}$ with $m=\max_k s_k$. In fp16, $e^{x}$ overflows for $x > 11.09$. bf16 has fp32's exponent range but only 8 bits of mantissa. Accumulate softmax denominators and the $PV$ product in **fp32** even when inputs are bf16.
+Always compute $\mathrm{softmax}(s)_j = \dfrac{e^{s_j - m}}{\sum_k e^{s_k - m}}$ with $m=\max_k s_k$. In fp16, $e^{x}$ overflows for $x > 11.09$. bf16 has fp32's exponent range but only 8 bits of mantissa. Accumulate softmax denominators and the $PV$ product in **fp32** even when inputs are bf16.
 
 ### 2.4 Online softmax (the core of FlashAttention)
 
@@ -103,8 +103,8 @@ This recurrence (Milakov & Gimelshein, 2018) is exact. FlashAttention tiles $Q$,
 ### 3.1 Multi-head attention (MHA)
 
 $$
-\operatorname{head}_i = \operatorname{Attention}(XW_Q^{(i)}, XW_K^{(i)}, XW_V^{(i)}),\qquad
-\operatorname{MHA}(X) = [\operatorname{head}_1;\dots;\operatorname{head}_{n_h}]\,W_O
+\mathrm{head}_i = \mathrm{Attention}(XW_Q^{(i)}, XW_K^{(i)}, XW_V^{(i)}),\qquad
+\mathrm{MHA}(X) = [\mathrm{head}_1;\dots;\mathrm{head}_{n_h}]\,W_O
 $$
 
 Each head has $d_h = d/n_h$. Heads specialise: previous-token heads, induction heads, syntactic heads, and so on.
@@ -175,22 +175,22 @@ ALiBi adds no embedding. Instead it adds a head-specific linear bias $-m_h\cdot(
 ### 5.1 RMSNorm vs LayerNorm
 
 $$
-\operatorname{LN}(x) = \gamma\odot\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta,
+\mathrm{LN}(x) = \gamma\odot\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta,
 \qquad
-\operatorname{RMSNorm}(x) = \gamma\odot\frac{x}{\sqrt{\tfrac{1}{d}\sum_i x_i^2+\epsilon}}
+\mathrm{RMSNorm}(x) = \gamma\odot\frac{x}{\sqrt{\tfrac{1}{d}\sum_i x_i^2+\epsilon}}
 $$
 
 RMSNorm drops mean-centering and bias. It is cheaper and empirically just as good.
 
 ### 5.2 Pre-norm vs post-norm
 
-**Post-norm** computes $x + f(x)$ and then normalizes. **Pre-norm** computes $x + f(\operatorname{Norm}(x))$. With post-norm, gradients near the output are large at initialization (Xiong et al., 2020), so it needs learning-rate warmup and becomes unstable in deep stacks. Pre-norm keeps an identity path through the residual stream and trains stably without careful warmup. The trade-off is that the residual-stream norm grows with depth, which is one reason for the final norm before the LM head.
+**Post-norm** computes $x + f(x)$ and then normalizes. **Pre-norm** computes $x + f(\mathrm{Norm}(x))$. With post-norm, gradients near the output are large at initialization (Xiong et al., 2020), so it needs learning-rate warmup and becomes unstable in deep stacks. Pre-norm keeps an identity path through the residual stream and trains stably without careful warmup. The trade-off is that the residual-stream norm grows with depth, which is one reason for the final norm before the LM head.
 
 ### 5.3 SwiGLU FFN
 
 $$
-\operatorname{FFN}_{\text{SwiGLU}}(x) = \big(\operatorname{SiLU}(xW_1)\odot xW_3\big)W_2,
-\qquad \operatorname{SiLU}(z)=z\,\sigma(z)
+\mathrm{FFN}_{\text{SwiGLU}}(x) = \big(\mathrm{SiLU}(xW_1)\odot xW_3\big)W_2,
+\qquad \mathrm{SiLU}(z)=z\,\sigma(z)
 $$
 
 This uses three matrices instead of two. To keep parameters equal to a $4d$ ReLU FFN, set $d_{ff}\approx \tfrac{8}{3}d$, rounded to a hardware-friendly multiple (e.g. 256).
@@ -216,10 +216,10 @@ The second term is attention over context. It is small at short context and domi
 
 ## 6. Mixture-of-Experts (MoE)
 
-Replace the dense FFN with $E$ expert FFNs and a router $g(x) = \operatorname{softmax}(xW_r)$. Each token is sent to its top-$k$ experts:
+Replace the dense FFN with $E$ expert FFNs and a router $g(x) = \mathrm{softmax}(xW_r)$. Each token is sent to its top-$k$ experts:
 
 $$
-y = \sum_{e \in \operatorname{TopK}(g(x),k)} \tilde g_e(x)\,\operatorname{FFN}_e(x)
+y = \sum_{e \in \mathrm{TopK}(g(x),k)} \tilde g_e(x)\,\mathrm{FFN}_e(x)
 $$
 
 Here $\tilde g$ is the gate renormalised over the selected experts. The design gives **total** parameters of roughly $E$× the FFN, but **active** parameters per token of only $k$×.

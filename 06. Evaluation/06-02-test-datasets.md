@@ -51,7 +51,7 @@ If you oversample hard slices, the raw mean **over-represents** them. Estimate p
 
 $$
 \hat\mu = \sum_{h} W_h\,\bar y_h,\qquad
-\operatorname{Var}(\hat\mu) \approx \sum_h W_h^2\,\frac{s_h^2}{n_h}
+\mathrm{Var}(\hat\mu) \approx \sum_h W_h^2\,\frac{s_h^2}{n_h}
 $$
 
 ```python

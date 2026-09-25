@@ -51,7 +51,7 @@ $$
 **Listwise (ListNet / softmax cross-entropy):**
 
 $$
-\mathcal{L}_{\text{ListNet}} = -\sum_i \operatorname{softmax}(\mathbf{y})_i \,\log \operatorname{softmax}(\mathbf{s})_i
+\mathcal{L}_{\text{ListNet}} = -\sum_i \mathrm{softmax}(\mathbf{y})_i \,\log \mathrm{softmax}(\mathbf{s})_i
 $$
 
 **Localized Contrastive Estimation (LCE)** — the standard cross-encoder recipe (Gao et al., 2021) — uses one positive and $n$ **hard negatives sampled from the first-stage retriever you will actually rerank**:
@@ -215,14 +215,14 @@ RAG needs rerankers to answer **"how many chunks?"** and **"is anything relevant
 **Platt scaling:**
 
 $$
-\hat p(\text{relevant} \mid s) = \sigma(a\,s + b), \qquad (a, b) = \arg\min_{a,b} \sum_i \operatorname{BCE}\big(y_i,\ \sigma(a s_i + b)\big)
+\hat p(\text{relevant} \mid s) = \sigma(a\,s + b), \qquad (a, b) = \arg\min_{a,b} \sum_i \mathrm{BCE}\big(y_i,\ \sigma(a s_i + b)\big)
 $$
 
 (Isotonic regression is the non-parametric alternative when you have more data.) Then choose the threshold $\tau$ for a **target precision** on the development set, and evaluate the results on held-out data:
 
 - keep chunks with $\hat p \ge \tau$;
 - **abstain** when none pass;
-- report the **expected calibration error**, $\text{ECE} = \sum_b \frac{|B_b|}{N}\,|\operatorname{acc}(B_b) - \operatorname{conf}(B_b)|$.
+- report the **expected calibration error**, $\text{ECE} = \sum_b \frac{|B_b|}{N}\,|\mathrm{acc}(B_b) - \mathrm{conf}(B_b)|$.
 
 ```python
 import numpy as np

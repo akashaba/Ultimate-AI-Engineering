@@ -48,9 +48,9 @@ Hybrid retrieval exploits the fact that errors are **weakly correlated**. Candid
 For query terms $t \in q$, term frequency $f(t,d)$, document length $|d|$, and average document length $\overline{|d|}$:
 
 $$
-\operatorname{BM25}(q, d) = \sum_{t \in q} \operatorname{IDF}(t)\cdot \frac{f(t,d)\,(k_1 + 1)}{f(t,d) + k_1\left(1 - b + b\,\frac{|d|}{\overline{|d|}}\right)},
+\mathrm{BM25}(q, d) = \sum_{t \in q} \mathrm{IDF}(t)\cdot \frac{f(t,d)\,(k_1 + 1)}{f(t,d) + k_1\left(1 - b + b\,\frac{|d|}{\overline{|d|}}\right)},
 \qquad
-\operatorname{IDF}(t) = \ln\!\left(1 + \frac{N - n_t + 0.5}{n_t + 0.5}\right)
+\mathrm{IDF}(t) = \ln\!\left(1 + \frac{N - n_t + 0.5}{n_t + 0.5}\right)
 $$
 
 - $k_1 \in [0.9, 2.0]$ controls **term-frequency saturation** (repeating a term has diminishing returns).
@@ -118,7 +118,7 @@ Learned sparse models keep the **inverted-index** execution model but *learn* te
 SPLADE uses a masked-language-model head. For input tokens $i$ and vocabulary entries $j$, with MLM logits $w_{ij}$:
 
 $$
-w_j = \max_{i \in \text{tokens}} \log\!\big(1 + \operatorname{ReLU}(w_{ij})\big),
+w_j = \max_{i \in \text{tokens}} \log\!\big(1 + \mathrm{ReLU}(w_{ij})\big),
 \qquad
 s(q, d) = \sum_{j \in V} w_j^{(q)}\, w_j^{(d)}
 $$
@@ -182,7 +182,7 @@ def maxsim(Q: torch.Tensor, D: torch.Tensor, d_mask: torch.Tensor | None = None)
 
 ### 5.1 Rank-based: RRF
 
-$\operatorname{RRF}(d) = \sum_r \frac{1}{k + \operatorname{rank}_r(d)}$, with $k \approx 60$ (see 02.02 §3.1 for the implementation). It needs no score calibration and is robust. **Weaknesses:** it throws away score *magnitudes* — a document that one retriever found overwhelmingly relevant gets the same credit as a marginal one at the same rank — and it is sensitive to $k$.
+$\mathrm{RRF}(d) = \sum_r \frac{1}{k + \mathrm{rank}_r(d)}$, with $k \approx 60$ (see 02.02 §3.1 for the implementation). It needs no score calibration and is robust. **Weaknesses:** it throws away score *magnitudes* — a document that one retriever found overwhelmingly relevant gets the same credit as a marginal one at the same rank — and it is sensitive to $k$.
 
 ### 5.2 Score-based: convex combination
 

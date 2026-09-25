@@ -11,20 +11,20 @@
 Given a database $X = \{\mathbf{x}_1, \ldots, \mathbf{x}_N\} \subset \mathbb{R}^d$ and a query $\mathbf{q}$, return
 
 $$
-\operatorname{kNN}(\mathbf{q}) = \operatorname*{arg\,top\text{-}k}_{i \in [N]} \; -\operatorname{dist}(\mathbf{q}, \mathbf{x}_i)
+\mathrm{kNN}(\mathbf{q}) = \mathrm*{arg\,top\text{-}k}_{i \in [N]} \; -\mathrm{dist}(\mathbf{q}, \mathbf{x}_i)
 $$
 
 **Exact search** costs $O(Nd)$ per query. With $N = 10^8$ and $d = 1024$ that is $10^{11}$ multiply-adds (~100 ms on a big GPU, and far more on a CPU), and 400 GB of fp32 vectors streamed from memory per query. ANN trades a little recall for orders of magnitude in speed:
 
 $$
-\text{Recall@}k = \frac{|\operatorname{ANN}_k(\mathbf{q}) \cap \operatorname{kNN}_k(\mathbf{q})|}{k}
+\text{Recall@}k = \frac{|\mathrm{ANN}_k(\mathbf{q}) \cap \mathrm{kNN}_k(\mathbf{q})|}{k}
 $$
 
 Note that this is recall **against exact search**, which is different from relevance recall in 03.01. A retrieval system's end-to-end quality is bounded by both.
 
 ### 1.1 Why high dimensions are hard
 
-- **Distance concentration** (Beyer et al., 1999): as $d$ grows, for many distributions $\frac{\max_i \operatorname{dist} - \min_i \operatorname{dist}}{\min_i \operatorname{dist}} \to 0$. Nearest and farthest neighbours become nearly equidistant.
+- **Distance concentration** (Beyer et al., 1999): as $d$ grows, for many distributions $\frac{\max_i \mathrm{dist} - \min_i \mathrm{dist}}{\min_i \mathrm{dist}} \to 0$. Nearest and farthest neighbours become nearly equidistant.
 - **Space partitioning fails:** KD-trees must visit a number of cells that grows exponentially with $d$ and degrade to brute force beyond ~20 dimensions.
 - **What saves us:** real embeddings have a low **intrinsic dimension** (they lie near a manifold), and we only need *approximate* answers.
 
@@ -65,7 +65,7 @@ Exact search is the **right answer** for ≲ 1M vectors on a GPU, and for heavil
 
 ## 2. Locality-Sensitive Hashing (LSH)
 
-A hash family is **locality-sensitive** if similar items collide with higher probability. For cosine similarity, **SimHash** (Charikar, 2002) uses random hyperplanes $\mathbf{r} \sim \mathcal{N}(0, I)$ and $h(\mathbf{x}) = \operatorname{sign}(\langle \mathbf{r}, \mathbf{x}\rangle)$:
+A hash family is **locality-sensitive** if similar items collide with higher probability. For cosine similarity, **SimHash** (Charikar, 2002) uses random hyperplanes $\mathbf{r} \sim \mathcal{N}(0, I)$ and $h(\mathbf{x}) = \mathrm{sign}(\langle \mathbf{r}, \mathbf{x}\rangle)$:
 
 $$
 \Pr[h(\mathbf{x}) = h(\mathbf{y})] = 1 - \frac{\theta(\mathbf{x},\mathbf{y})}{\pi}

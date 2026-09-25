@@ -177,7 +177,7 @@ The privileged planner receives `{"summary": "$Q1", "sender": "$Q2"}` and can de
 Generalising 4.1 and 4.2: label every value with its **provenance** (trusted user input, system, internal data, untrusted external), propagate the labels through operations, and enforce **sink policies** at tool calls:
 
 $$
-\text{allow}(\text{tool}, \text{args}) \iff \forall a \in \text{args}:\ \operatorname{labels}(a) \subseteq \text{AllowedSources}(\text{tool}, \text{param})
+\text{allow}(\text{tool}, \text{args}) \iff \forall a \in \text{args}:\ \mathrm{labels}(a) \subseteq \text{AllowedSources}(\text{tool}, \text{param})
 $$
 
 For example, `send_email.recipient` must derive only from trusted user input or the directory. `http_post.url` must never derive from untrusted content. `publish.body` may include untrusted-derived text only with approval.

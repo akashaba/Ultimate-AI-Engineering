@@ -13,7 +13,7 @@
 An **eval** is a function from (system version, dataset) to a set of scores with uncertainty, computed reproducibly:
 
 $$
-\operatorname{Eval}(\text{system}_v, D) = \Big\{ \hat\mu_m \pm \text{CI}_m \Big\}_{m \in \text{metrics}},\qquad \hat\mu_m = \frac{1}{|D|}\sum_{x \in D} g_m\big(x,\ \text{system}_v(x)\big)
+\mathrm{Eval}(\text{system}_v, D) = \Big\{ \hat\mu_m \pm \text{CI}_m \Big\}_{m \in \text{metrics}},\qquad \hat\mu_m = \frac{1}{|D|}\sum_{x \in D} g_m\big(x,\ \text{system}_v(x)\big)
 $$
 
 Here $g_m$ is a **grader**. The purposes differ, and so do the designs:
@@ -127,7 +127,7 @@ $$
 Eval items often come in **clusters**: several questions about the same document, several turns of one conversation, several paraphrases of one intent. The items are then correlated, and naive standard errors are **too small** (Miller, 2024). Use cluster-robust standard errors:
 
 $$
-\operatorname{SE}_{\text{clustered}}(\bar x) = \frac{1}{n}\sqrt{\sum_{c=1}^{C}\Big(\sum_{i \in c}(x_i - \bar x)\Big)^2}
+\mathrm{SE}_{\text{clustered}}(\bar x) = \frac{1}{n}\sqrt{\sum_{c=1}^{C}\Big(\sum_{i \in c}(x_i - \bar x)\Big)^2}
 $$
 
 Alternatively, bootstrap by **resampling clusters**, not items.
@@ -254,7 +254,7 @@ Suppose $n$ items have both human labels $Y$ and judge scores $f(X)$, and $N \gg
 $$
 \hat\theta_{\text{PP}} = \underbrace{\frac{1}{N}\sum_{j=1}^{N} f(\tilde X_j)}_{\text{judge on large set}} + \underbrace{\frac{1}{n}\sum_{i=1}^{n}\big(Y_i - f(X_i)\big)}_{\text{bias correction ("rectifier")}},
 \qquad
-\widehat{\operatorname{Var}} = \frac{\sigma^2_{f}}{N} + \frac{\sigma^2_{Y-f}}{n}
+\widehat{\mathrm{Var}} = \frac{\sigma^2_{f}}{N} + \frac{\sigma^2_{Y-f}}{n}
 $$
 
 The better the judge, the smaller $\sigma^2_{Y-f}$, and the more you gain. PPI never trusts the judge blindly: its bias is measured and removed.

@@ -67,7 +67,7 @@ $$
 Generate one or more hypothetical answers $h_j$, and search with a vector that mixes them with the query:
 
 $$
-\mathbf{v} = \operatorname{normalize}\Big(\alpha\, \mathbf{e}(q) + (1-\alpha)\,\frac{1}{m}\sum_{j=1}^{m} \mathbf{e}(h_j)\Big)
+\mathbf{v} = \mathrm{normalize}\Big(\alpha\, \mathbf{e}(q) + (1-\alpha)\,\frac{1}{m}\sum_{j=1}^{m} \mathbf{e}(h_j)\Big)
 $$
 
 The hypothetical answer "looks like" a relevant document in embedding space, even if its facts are wrong. **Use it for the dense leg only.** Hallucinated terms (fake section numbers, invented names) must never enter the lexical leg or the filters.

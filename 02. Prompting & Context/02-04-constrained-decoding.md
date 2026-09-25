@@ -10,13 +10,13 @@
 
 ## 1. The Problem, Formally
 
-Let $\mathcal{L} \subseteq \Sigma^*$ be the target language over characters (or bytes): a regex, JSON Schema, SQL grammar, etc. The tokenizer vocabulary is $\mathcal{V}$, where each token $v$ decodes to a string $\operatorname{str}(v) \in \Sigma^*$. After generating a string $s$, the **allowed set** is
+Let $\mathcal{L} \subseteq \Sigma^*$ be the target language over characters (or bytes): a regex, JSON Schema, SQL grammar, etc. The tokenizer vocabulary is $\mathcal{V}$, where each token $v$ decodes to a string $\mathrm{str}(v) \in \Sigma^*$. After generating a string $s$, the **allowed set** is
 
 $$
-\mathcal{A}(s) = \Big\{\, v \in \mathcal{V} \;:\; s \cdot \operatorname{str}(v) \in \operatorname{Pref}(\mathcal{L}) \,\Big\} \;\cup\; \big\{\texttt{EOS} \;:\; s \in \mathcal{L}\big\}
+\mathcal{A}(s) = \Big\{\, v \in \mathcal{V} \;:\; s \cdot \mathrm{str}(v) \in \mathrm{Pref}(\mathcal{L}) \,\Big\} \;\cup\; \big\{\texttt{EOS} \;:\; s \in \mathcal{L}\big\}
 $$
 
-where $\operatorname{Pref}(\mathcal{L})$ is the set of prefixes of strings in $\mathcal{L}$. For a live prefix (one that can still be completed), the masked sampling step is
+where $\mathrm{Pref}(\mathcal{L})$ is the set of prefixes of strings in $\mathcal{L}$. For a live prefix (one that can still be completed), the masked sampling step is
 
 $$
 \tilde p(v \mid s) = \frac{p(v \mid s)\,\mathbb{1}[v \in \mathcal{A}(s)]}{\sum_{u \in \mathcal{A}(s)} p(u \mid s)}
@@ -62,7 +62,7 @@ Keep this as the **reference oracle** for property-based tests of any faster eng
 Compile the regex to a **DFA** $M = (Q, \Sigma, \delta, q_0, F)$ and remove dead states (states from which no accepting state is reachable). For every state $q$ and every token $v$, run the DFA over the token's characters:
 
 $$
-\delta^*(q, v) = \delta(\ldots\delta(\delta(q, c_1), c_2)\ldots, c_n), \qquad \operatorname{str}(v) = c_1 c_2 \ldots c_n
+\delta^*(q, v) = \delta(\ldots\delta(\delta(q, c_1), c_2)\ldots, c_n), \qquad \mathrm{str}(v) = c_1 c_2 \ldots c_n
 $$
 
 Precompute the **token index** $I[q] = \{\, v \mapsto \delta^*(q,v) \;:\; \delta^*(q, v) \text{ defined and live} \}$. At decode time, the mask is a **lookup** $I[q_t]$, and the state update is $q_{t+1} = I[q_t][v_t]$: $O(1)$ per step after an $O(|Q|\cdot|\mathcal{V}|\cdot \bar\ell)$ precompute, where $\bar\ell$ is the mean token length.
@@ -149,7 +149,7 @@ Arbitrarily nested JSON, recursive schemas, balanced parentheses, and programmin
 
 ### 4.1 From DFA state to parser state
 
-For a CFG, the decoder state is a **parser configuration**: an LR stack, a set of Earley items, or a pushdown automaton's (state, stack). "Is $s\cdot\operatorname{str}(v)$ a viable prefix?" becomes "can the parser consume these characters without error?"
+For a CFG, the decoder state is a **parser configuration**: an LR stack, a set of Earley items, or a pushdown automaton's (state, stack). "Is $s\cdot\mathrm{str}(v)$ a viable prefix?" becomes "can the parser consume these characters without error?"
 
 The central performance problem: **the parser state includes a stack, so you cannot precompute a finite index over all states.** Production engines attack this in several ways:
 

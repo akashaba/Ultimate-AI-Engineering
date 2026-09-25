@@ -48,7 +48,7 @@ Define the run state as a schema, and define **how each field merges updates** (
 Store **immutable events** (`PlanCreated`, `ToolCalled`, `ToolReturned`, `ApprovalGranted`, …) and derive the state by folding reducers over them:
 
 $$
-S_t = \operatorname{fold}(R,\ S_0,\ [e_1, e_2, \ldots, e_t]) = R(\ldots R(R(S_0, e_1), e_2)\ldots, e_t)
+S_t = \mathrm{fold}(R,\ S_0,\ [e_1, e_2, \ldots, e_t]) = R(\ldots R(R(S_0, e_1), e_2)\ldots, e_t)
 $$
 
 This gives you:
@@ -169,7 +169,7 @@ Store **reusable procedures** — a validated multi-step workflow, a code functi
 $$
 \hat r_{\text{skill}} = \mathbb{E}[\theta \mid s, f] = \frac{s + \alpha}{s + f + \alpha + \beta},
 \qquad
-\operatorname{score} = \cos(\mathbf{e}_{\text{task}}, \mathbf{e}_{\text{skill}}) \cdot \hat r_{\text{skill}}
+\mathrm{score} = \cos(\mathbf{e}_{\text{task}}, \mathbf{e}_{\text{skill}}) \cdot \hat r_{\text{skill}}
 $$
 
 Here $s$ and $f$ are the successes and failures, and $(\alpha, \beta)$ is a prior (e.g. $(1,1)$). New skills start with the prior's mean reliability. Skills that keep failing sink, and can be retired automatically.

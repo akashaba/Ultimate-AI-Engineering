@@ -79,8 +79,8 @@ A very small p-value (e.g. < 0.001) means stop and investigate before reading an
 Using a pre-experiment covariate $X$ (e.g. the user's task-success rate in the previous 4 weeks) that is independent of the treatment:
 
 $$
-Y^{\text{cuped}} = Y - \theta\,(X - \bar X),\qquad \theta = \frac{\operatorname{Cov}(Y, X)}{\operatorname{Var}(X)},\qquad
-\operatorname{Var}(\bar Y^{\text{cuped}}) = (1 - \rho^2_{XY})\operatorname{Var}(\bar Y)
+Y^{\text{cuped}} = Y - \theta\,(X - \bar X),\qquad \theta = \frac{\mathrm{Cov}(Y, X)}{\mathrm{Var}(X)},\qquad
+\mathrm{Var}(\bar Y^{\text{cuped}}) = (1 - \rho^2_{XY})\mathrm{Var}(\bar Y)
 $$
 
 With $\rho = 0.5$, the variance drops by 25%, which is equivalent to 33% more traffic.
